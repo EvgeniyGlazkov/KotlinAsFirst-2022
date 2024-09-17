@@ -82,11 +82,12 @@ fun digitNumber(n: Int): Int {
     }
     return count
 }
-
-fun digitNumberRecursion(n: Int): Int {
+/*
+fun digitNumber(n: Int): Int {
     if(n < 10) return 1
     return 1 + digitNumberRecursion(n/10)
 }
+*/
 
 /**
  * Простая (2 балла)
@@ -166,46 +167,18 @@ fun collatzSteps(x: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-/*
-fun lcm(m: Int, n: Int): Int {
-    for (k in min(m, n) downTo 2){ //Ищем наибольший общий делитель
-        if(m % k == 0 && n % k == 0) return m * n / k
-    }
-    return m * n
-}
-*/
 fun lcm(m: Int, n: Int): Int {
     var a = m
     var b = n
-    while(a != 0 && b != 0){
-        if(a > b) a = a % b
-        else b = b % a
+    var temp = 0
+    while(b != 0){
+        temp = a % b
+        a = b
+        b = temp
     }
-    return m * n / (a + b)
+    return m * n / a        //НОК = m * n / НОД
 }
-/*
-fun lcm(m: Int, n: Int): Int {
-    var k1 = m
-    var k2 = n
-    while (k2 != 0) {
-        val d = k2
-        k2 = k1 % k2
-        k1 = d
-    }
-    return m * n / k1
-}
-*/
-/*
-fun main(args: Array<String>) {
-    val elapsedTime = measureTimeMillis {
-        // ваш код, который нужно измерить
-        lcm(13, 13)
-    }
 
-    //println(l)
-    println(elapsedTime)
-}
-*/
 /**
  * Средняя (3 балла)
  *
