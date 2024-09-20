@@ -2,7 +2,7 @@
 
 package lesson3.task1
 
-import kotlin.math.sqrt
+import kotlin.math.*
 
 // Урок 3: циклы
 // Максимальное количество баллов = 9
@@ -186,7 +186,18 @@ fun lcm(m: Int, n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+fun isCoPrime(m: Int, n: Int): Boolean {
+    if(m % 2 == 0 && n % 2 == 0) return false                      //исключаем парные
+    if(max(m, n) % min(m, n) == 0) return false                    //и простые перемноженные (3*37=111)
+    for (i in 3..sqrt(min(m, n).toDouble()).toInt() step 2){ //смотрим только непарные числа
+        if(min(m, n) % i == 0){                     //нашли делитель для одного числа
+            if (max(m, n) % i == 0) {
+                return false
+            }
+        }
+    }
+    return true
+}
 
 /**
  * Средняя (3 балла)
@@ -195,7 +206,16 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var number = n
+    var result = 0
+
+    while (number != 0){
+        result = result * 10 + number % 10
+        number /= 10
+    }
+    return result
+}
 
 /**
  * Средняя (3 балла)
@@ -206,7 +226,15 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean {
+    var number = n
+    var newNum = 0
+    while (number > 0) {
+        newNum = newNum * 10 + number % 10
+        number /= 10
+    }
+    return newNum == n
+}
 
 /**
  * Средняя (3 балла)
@@ -215,8 +243,17 @@ fun isPalindrome(n: Int): Boolean = TODO()
  * Например, 54 и 323 состоят из разных цифр, а 111 и 0 из одинаковых.
  *
  * Использовать операции со строками в этой задаче запрещается.
- */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+ */// Перефразировать в: Проверить с одинаковых цифр состоит число (вернуть false) или нет (true)
+fun hasDifferentDigits(n: Int): Boolean {
+    var number = n
+    while (number != 0){
+        val dig1 = number % 10
+        number /= 10
+        val dig2 = number % 10
+        if (dig1 != dig2 && dig2 != 0) return true
+    }
+    return false
+}
 
 /**
  * Средняя (4 балла)
@@ -227,7 +264,26 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    val y:Double
+    if(x > 2 * PI) y = x % (2 * PI)
+    else y = x
+
+    var n = 1
+    var sign = 1
+    var ySquared = 1.0
+    var ySave = 1.0
+    var ySin = 0.0
+
+    while(abs(ySin - ySave) > eps){
+        ySave = ySin
+        ySin += sign * ySquared * y / factorial(n)
+        ySquared *= y * y                          //Каждый раз степень увеличивается на 2
+        sign = -sign
+        n += 2
+    }
+    return ySin
+}
 
 /**
  * Средняя (4 балла)
