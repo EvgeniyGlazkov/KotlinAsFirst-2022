@@ -85,7 +85,7 @@ fun digitNumber(n: Int): Int {
 /*
 fun digitNumber(n: Int): Int {
     if(n < 10) return 1
-    return 1 + digitNumberRecursion(n/10)
+    return 1 + digitNumber(n/10)
 }
 */
 
@@ -149,14 +149,9 @@ fun collatzSteps(x: Int): Int {
     var n = x
     var count = 0
     while (n != 1){
-        if(n % 2 == 0) {
-            n /= 2
-            count++
-        }
-        else {
-            n = 3 * n + 1
-            count++
-        }
+        if(n % 2 == 0) n /= 2
+        else n = 3 * n + 1
+        count++
     }
     return count
 }
@@ -186,6 +181,9 @@ fun lcm(m: Int, n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
+fun isCoPrime(m: Int, n: Int): Boolean = m * n == lcm(m, n)
+
+/*//Альтернативное решение
 fun isCoPrime(m: Int, n: Int): Boolean {
     if(m % 2 == 0 && n % 2 == 0) return false                      //исключаем парные
     if(max(m, n) % min(m, n) == 0) return false                    //и простые перемноженные (3*37=111)
@@ -198,6 +196,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
     }
     return true
 }
+*/
 
 /**
  * Средняя (3 балла)
@@ -226,15 +225,7 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
-    var number = n
-    var newNum = 0
-    while (number > 0) {
-        newNum = newNum * 10 + number % 10
-        number /= 10
-    }
-    return newNum == n
-}
+fun isPalindrome(n: Int): Boolean = revert(n) == n
 
 /**
  * Средняя (3 балла)
@@ -245,12 +236,11 @@ fun isPalindrome(n: Int): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */// Перефразировать в: Проверить с одинаковых цифр состоит число (вернуть false) или нет (true)
 fun hasDifferentDigits(n: Int): Boolean {
+    val dig1 = n % 10
     var number = n
     while (number != 0){
-        val dig1 = number % 10
+        if(dig1 != number % 10) return true
         number /= 10
-        val dig2 = number % 10
-        if (dig1 != dig2 && dig2 != 0) return true
     }
     return false
 }
@@ -265,23 +255,20 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
 fun sin(x: Double, eps: Double): Double {
-    val y:Double
-    if(x > 2 * PI) y = x % (2 * PI)
-    else y = x
+    val y = x % (2 * PI)
 
     var n = 1
     var sign = 1
     var ySquared = 1.0
-    var ySave = 1.0
     var ySin = 0.0
 
-    while(abs(ySin - ySave) > eps){
-        ySave = ySin
-        ySin += sign * ySquared * y / factorial(n)
+    do {
+        val yIter = sign * ySquared * y / factorial(n)
+        ySin += yIter
         ySquared *= y * y                          //Каждый раз степень увеличивается на 2
         sign = -sign
         n += 2
-    }
+    } while(abs(yIter) > eps)
     return ySin
 }
 
@@ -294,7 +281,23 @@ fun sin(x: Double, eps: Double): Double {
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x: Double, eps: Double): Double {
+    val y = x % (2 * PI)
+
+    var n = 2
+    var sign = -1
+    var ySquared = y * y
+    var yCos = 1.0
+
+    do {
+        val yInter = sign * ySquared / factorial(n)
+        yCos += yInter
+        ySquared *= y * y                      //Каждый раз степень увеличивается на 2
+        sign = -sign
+        n += 2
+    } while(abs(yInter) > eps)
+    return yCos
+}
 
 /**
  * Сложная (4 балла)
@@ -305,7 +308,26 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var square = 0
+    var count = 0
+    var number = 0
+
+    while (count < n) {
+        number ++
+        square = number * number
+        count += digitNumber(square)
+        if (count >= n){
+            while(count > n){
+                square /= 10
+                count--
+            }
+            square %= 10
+            break
+        }
+    }
+    return square
+}
 
 /**
  * Сложная (5 баллов)
@@ -316,4 +338,23 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var fibN = 0
+    var count = 0
+    var number = 0
+
+    while (count < n) {
+        number++
+        fibN = fib(number)
+        count += digitNumber(fibN)
+        if (count >= n){
+            while(count > n){
+                fibN /= 10
+                count--
+            }
+            fibN %= 10
+            break
+        }
+    }
+    return fibN
+}
