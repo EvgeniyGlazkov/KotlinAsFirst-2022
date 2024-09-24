@@ -226,11 +226,10 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString("*")
 fun convert(n: Int, base: Int): List<Int> {
     val result = mutableListOf<Int>()
     var temp = n
-    while (temp > base){
+    while (temp > 0){
         result.add(temp % base)
         temp /= base
     }
-    result.add(temp)
     return result.reversed()
 }
 
@@ -245,8 +244,27 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String = TODO()
-
+fun convertToString(n: Int, base: Int): String {
+    val str = "0123456789abcdefghijklmnopqrstuvwxyz"
+    val result = mutableListOf<Char>()
+    var temp = n
+    while (temp > 0){
+        result.add(str[temp % base])
+        temp /= base
+    }
+    return result.reversed().joinToString("")
+}
+/* Альтернативное решение используя ASCII
+fun convertToString(n: Int, base: Int): String {
+    val temp = convert(n, base)
+    val result = mutableListOf<Char>()
+    for (i in temp.indices){
+        if (temp[i] > 9) result.add(Char(temp[i] + 87)) //10 + 87 = 97 код символа 'a' в ASCII
+        else result.add(Char(temp[i] + 48))             //48 - код символа '0' в ASCII
+    }
+    return result.joinToString("")
+}
+*/
 /**
  * Средняя (3 балла)
  *
@@ -254,7 +272,7 @@ fun convertToString(n: Int, base: Int): String = TODO()
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int = TODO()
+fun decimal(digits: List<Int>, base: Int): Int = digits.reduce { sum, element -> sum * base + element }
 
 /**
  * Сложная (4 балла)
@@ -268,7 +286,12 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    val s = "0123456789abcdefghijklmnopqrstuvwxyz"
+    val list = mutableListOf<Int>()
+    for (i in str.indices) list.add(s.indexOf(str[i]))
+    return list.reduce { a, b -> a * base + b}
+}
 
 /**
  * Сложная (5 баллов)
