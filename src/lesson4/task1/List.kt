@@ -318,10 +318,6 @@ fun roman(n: Int): String {
     return result
 }
 
-fun main(args: Array<String>) {
-    println(roman(1))
-}
-
 /**
  * Очень сложная (7 баллов)
  *
@@ -329,4 +325,56 @@ fun main(args: Array<String>) {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    var temp = n / 1000
+    var result = threeDig(temp, 0)
+    if (temp != 0){ //есть тысячи
+        when (temp % 10) {
+            1 -> if (temp % 100 != 11) {
+                result += "тысяча "         //1, x21 .. x91
+            } else { result += "тысяч " }   //для 11 тысяч
+            2, 3, 4 -> result += "тысячи "
+            else -> result += "тысяч "
+        }
+    }
+    temp = n % 1000
+    result += threeDig(temp, 1)
+    return result.trim()
+}
+
+fun threeDig(n: Int, part: Int): String {
+    var temp = n
+    var res = ""
+    val d011 = listOf(11, 12, 13, 14, 15, 16, 17, 18, 19)
+    val d1 = listOf("один ", "два ", "три ", "четыре ", "пять ", "шесть ", "семь ", "восемь ", "девять ")
+    val d1_1 = listOf("одна ", "две ", "три ", "четыре ", "пять ", "шесть ", "семь ", "восемь ", "девять ")
+    val d11 = listOf("одиннадцать ", "двенадцать ", "тринадцать ", "четырнадцать ", "пятнадцать ",
+                     "шестнадцать ", "семнадцать ", "восемнадцать ", "девятнадцать ")
+    val d10 = listOf("десять ", "двадцать ", "тридцать ", "сорок ", "пятьдесят ", "шестьдесят ",
+                     "семьдесят ", "восемьдесят ", "девяносто ")
+    val d100 = listOf("сто ", "двести ", "триста ", "четыреста ", "пятьсот ", "шестьсот ",
+                      "семьсот ", "восемьсот ", "девятьсот ")
+
+    if(temp > 99){
+        res += d100[temp / 100 - 1]//100..900
+        temp %= 100
+    }
+    if(temp > 9) {
+        for (i in 0..8){        //проверка на
+            if (temp == d011[i]) {    //11..19
+                res += d11[i]
+                return res
+            }
+        }
+        res += d10[temp / 10 - 1]   //10..90
+        temp %= 10
+    }
+    if (temp > 0) { //1..9
+        if (part == 0) {
+            res += d1_1[temp % 10 - 1]//одна, две
+        } else {
+            res += d1[temp % 10 - 1]
+        }
+    }
+    return res
+}
